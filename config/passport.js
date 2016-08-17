@@ -5,8 +5,9 @@ var path = require('path');
 
 module.exports = function (passport, passwd) {
 
-    console.log('use this passwd: ',path.resolve(passwd))
-    var usedDb = JSON.parse(fs.readFileSync(path.resolve(passwd)));
+    var passwdFile = path.resolve(process.cwd(), passwd );
+    console.log('use this passwd: ', passwdFile)
+    var usedDb = JSON.parse(fs.readFileSync(passwdFile));
 
     // used to serialize the user for the session
     passport.serializeUser(function (user, done) {
