@@ -1,10 +1,13 @@
 module.exports = function (app, passport) {
 
     app.get('/login', function (req, res) {
+
+        req.session.redirectTo =  req.query.ref || undefined; 
+
         if (req.user)
-            res.render('profile.ejs', { user: req.user });
+            res.redirect('/session');
         else
-            res.render('login.ejs', { message: '' });
+            res.render('login.ejs', { message: '', referrer:  req.session.redirectTo });
     });
 
     app.get('/auth', function (req, res) {
@@ -15,15 +18,18 @@ module.exports = function (app, passport) {
     });
 
     app.post('/login', passport.authenticate('local-login'), function (req, res, next) {
+        
+        var referrer = req.query.referrer || '';
+        
         console.log('User: ' + req.user.id + ' was log in');
+
         switch (app.args.redirect) {
             case 'url':
                 console.log('redirect to url ', app.args.redirect_url)
                 res.redirect(app.args.redirect_url);
                 break;
             case 'refer':
-                console.log('redirect to refer ', req.get('Referrer'))
-                res.redirect(req.get('Referrer'));
+                res.redirect(referrer);
                 break;
             default:
             case 'root':
@@ -37,10 +43,18 @@ module.exports = function (app, passport) {
 
     });
 
+    app.get('/session', function(req,res) {
+        res.render('profile.ejs', { user: req.user });
+    })
+
     app.get('/logout', isLoggedIn, function (req, res) {
         req.logout();
         res.redirect('/login');
     });
+
+    app.get('/*', function(req,res){
+        res.redirect('/login'+ ((req.url != '/' || req.url != '/login') ? '?ref='+ req.url:''));
+    })
 
     function isLoggedIn(req, res, next) {
 
