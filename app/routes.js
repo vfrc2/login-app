@@ -7,6 +7,13 @@ module.exports = function (app, passport) {
             res.render('login.ejs', { message: '' });
     });
 
+    app.get('/auth', function (req, res) {
+        if (req.isAuthenticated())
+            res.status(200).send();
+        else
+            res.status(401).send();
+    });
+
     app.post('/login', passport.authenticate('local-login'), function (req, res, next) {
         console.log('User: ' + req.user.id + ' was log in');
         res.status(200).send(req.user.id + ' login success');
