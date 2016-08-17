@@ -16,12 +16,30 @@ module.exports = function (app, passport) {
 
     app.post('/login', passport.authenticate('local-login'), function (req, res, next) {
         console.log('User: ' + req.user.id + ' was log in');
-        res.status(200).send(req.user.id + ' login success');
+        switch (app.args.redirect) {
+            case 'url':
+                console.log('redirect to url ', app.args.redirect_url)
+                res.redirect(app.args.redirect_url);
+                break;
+            case 'refer':
+                console.log('redirect to refer ', req.get('Referrer'))
+                res.redirect(req.get('Referrer'));
+                break;
+            default:
+            case 'root':
+                console.log('redirect to root')
+                res.redirect();
+                break;
+            case 'no':
+                res.status(200).send(req.user.id + ' login success');
+                break;
+        }
+
     });
 
     app.get('/logout', isLoggedIn, function (req, res) {
         req.logout();
-        res.redirect('/');
+        res.redirect('/login');
     });
 
     function isLoggedIn(req, res, next) {
