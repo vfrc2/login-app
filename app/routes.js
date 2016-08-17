@@ -1,20 +1,18 @@
-module.exports = function(app, passport) {
+module.exports = function (app, passport) {
 
-    app.get('/login', function(req, res) {
-        // render the page and pass in any flash data if it exists
-        res.render('login.ejs', {message: ''}); 
+    app.get('/login', function (req, res) {
+        if (req.user)
+            res.render('profile.ejs', { user: req.user });
+        else
+            res.render('login.ejs', { message: '' });
     });
 
-    app.get('/', isLoggedIn, function(req,res) {
-        res.render('profile.ejs', {user: req.user});
-    })
+    app.post('/login', passport.authenticate('local-login'), function (req, res, next) {
+        console.log('User: ' + req.user.id + ' was log in');
+        res.status(200).send(req.user.id + ' login success');
+    });
 
-    app.post('/login', passport.authenticate('local-login', {
-        successRedirect : '/profile', // redirect to the secure profile section
-        failureRedirect : '/login', // redirect back to the signup page if there is an error
-    }));
-
-    app.get('/logout', function(req, res) {
+    app.get('/logout', isLoggedIn, function (req, res) {
         req.logout();
         res.redirect('/');
     });

@@ -6,8 +6,8 @@ utils.encrypt = function encryptPass(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null)
 }
 
-utils.compare = function comparePass(password) {
-    return bcrypt.compareSync(password, this.local.password);
+utils.compare = function comparePass(password, hash) {
+    return bcrypt.compareSync(password, hash);
 }
 
 module.exports = utils;
