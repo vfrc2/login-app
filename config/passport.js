@@ -1,10 +1,12 @@
 var LocalStrategy = require('passport-local').Strategy;
 var util = require('../util.js');
+var fs = require('fs');
+var path = require('path');
 
-module.exports = function (passport) {
+module.exports = function (passport, passwd) {
 
-    var usedDb = require('../.passwd.json');
-
+    console.log('use this passwd: ',path.resolve(passwd))
+    var usedDb = JSON.parse(fs.readFileSync(path.resolve(passwd)));
 
     // used to serialize the user for the session
     passport.serializeUser(function (user, done) {
