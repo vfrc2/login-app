@@ -1,5 +1,6 @@
 var express = require('express');
 var passport = require('passport');
+var path = require('path');
 
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -18,6 +19,7 @@ app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
 
 app.set('view engine', 'ejs'); // set up ejs for templating
+app.set('views', path.join(__dirname,'/views'));
 
 // required for passport
 app.use(session({ secret: args.secret || 'ilovescotchscotchyscotchscotch' })); // session secret
