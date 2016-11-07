@@ -22,7 +22,12 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 app.set('views', path.join(__dirname,'/views'));
 
 // required for passport
-app.use(session({ secret: args.secret || 'ilovescotchscotchyscotchscotch' })); // session secret
+app.use(session({ 
+    secret: args.secret || 'ilovescotchscotchyscotchscotch',
+    cookie: {
+        maxAge: 259200000 //3 day
+    }
+})); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
